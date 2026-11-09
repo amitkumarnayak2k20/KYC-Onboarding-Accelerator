@@ -1,0 +1,41 @@
+[
+  {
+    "sample_id": "sample-001",
+    "vendor_version": "ocr-v1",
+    "document_type": "passport",
+    "document_text": "Name: Asha Rao\nDate of Birth: 1990-06-15\nDocument Number: P1234567\nExpiry Date: 2030-06-15\nAddress: 12 Sample Road, Hyderabad, Telangana, 500001",
+    "expected": {
+      "full_name": "Asha Rao",
+      "date_of_birth": "1990-06-15",
+      "document_number": "P1234567",
+      "expiry_date": "2030-06-15",
+      "address": "12 Sample Road, Hyderabad, Telangana, 500001"
+    }
+  },
+  {
+    "sample_id": "sample-002",
+    "vendor_version": "ocr-v1",
+    "document_type": "passport",
+    "document_text": "Name: Ravi Kumar\nDate of Birth: 1988-02-20\nDocument Number: Q7654321\nExpiry Date: 2031-02-20\nAddress: 44 Lake View, Hyderabad, Telangana, 500002",
+    "expected": {
+      "full_name": "Ravi Kumar",
+      "date_of_birth": "1988-02-20",
+      "document_number": "Q7654321",
+      "expiry_date": "2031-02-20",
+      "address": "44 Lake View, Hyderabad, Telangana, 500002"
+    }
+  },
+  {
+    "sample_id": "sample-003",
+    "vendor_version": "ocr-v1",
+    "document_type": "passport",
+    "document_text": "Name: Meera Das\nDate of Birth: 1992-11-03\nDocument Number: R1122334\nExpiry Date: 2032-11-03\nAddress: 8 Green Park, Hyderabad, Telangana, 500003",
+    "expected": {
+      "full_name": "Meera Das",
+      "date_of_birth": "1992-11-03",
+      "document_number": "R1122334",
+      "expiry_date": "2032-11-03",
+      "address": "8 Green Park, Hyderabad, Telangana, 500003"
+    }
+  }
+]

@@ -1,0 +1,61 @@
+services:
+  rag-ingest:
+    build: .
+    env_file: .env
+    environment:
+      PYTHONPATH: /app/src
+      CHROMA_PERSIST_DIR: /app/chroma_store
+      RAG_DOCUMENTS_DIR: /app/documents
+    command: ["sh", "scripts/docker_ingest.sh"]
+    volumes: ["chroma-data:/app/chroma_store"]
+    restart: "no"
+  kyc-api:
+    build: .
+    container_name: kyc-api
+    env_file: .env
+    environment:
+      PYTHONPATH: /app/src
+      DATABASE_PATH: /app/data/kyc_demo.db
+      CHROMA_PERSIST_DIR: /app/chroma_store
+      RAG_DOCUMENTS_DIR: /app/documents
+      OTEL_ENABLED: "true"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+    ports: ["8000:8000"]
+    volumes: ["kyc-data:/app/data", "chroma-data:/app/chroma_store"]
+    depends_on:
+      rag-ingest: {condition: service_completed_successfully}
+      otel-collector: {condition: service_started}
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    ports: ["16686:16686"]
+    environment: {COLLECTOR_OTLP_ENABLED: "true"}
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.110.0
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes: ["./monitoring/otel-collector.yml:/etc/otelcol-contrib/config.yaml:ro"]
+    ports: ["4317:4317", "4318:4318"]
+    depends_on: [jaeger]
+  prometheus:
+    image: prom/prometheus:v2.55.0
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
+    ports: ["9090:9090"]
+    depends_on: [kyc-api, alertmanager]
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    volumes: ["./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro"]
+    ports: ["9093:9093"]
+  grafana:
+    image: grafana/grafana:11.3.0
+    ports: ["3000:3000"]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-me}
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on: [prometheus, jaeger]
+volumes:
+  kyc-data:
+  chroma-data:

@@ -1,0 +1,5 @@
+issue,handling
+Missing mandatory field,Route to manual review; request a clearer document if required
+Unreadable or conflicting date of birth,Do not infer; route to trained human reviewer
+Address mismatch,Check approved evidence and route material discrepancies to human review
+Suspected document tampering,Stop automated processing and follow the organisation's escalation procedure
