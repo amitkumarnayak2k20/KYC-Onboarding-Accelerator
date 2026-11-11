@@ -24,7 +24,7 @@ def process_application(applicant_id,request):
             stored=add_document(applicant_id,request.document_type,request.document_text,request.vendor_version)
             DOCUMENTS_RECEIVED.labels(request.document_type).inc()
             add_event(applicant_id,"DOCUMENT_RECEIVED",{"document_id":stored["document_id"],"document_type":request.document_type,"vendor_version":request.vendor_version,"pii_redaction_counts":redaction_counts})
-        application=get_application(applicant_id); docs=get_documents(applicant_id)
+        application=get_application(applicant_id); docs=[d for d in get_documents(applicant_id) if d["status"]!="SUPERSEDED"]
         if not docs:raise ValueError("No documents are registered. Submit at least one document before processing.")
         identity_types={"passport","driving_licence","national_id"}
         if not any(d["document_type"] in identity_types for d in docs):

@@ -1,0 +1,15 @@
+SAMPLE — NOT VALID — TEST DATA ONLY
+SAMPLE DRIVING LICENCE — TEST DATA ONLY
+Fictional training document; not issued by any transport authority.
+
+Document type: Driving Licence
+Licence number: MOCK-TS-2026-000184
+Name: Rohan Mehta
+Date of birth: 18 April 1992
+Address: Flat 402, Lakeview Residency, Road No. 12, Jubilee Hills, Hyderabad, Telangana 500033
+Issuing region: Telangana (fictional sample)
+Issue date: 12 January 2024
+Expiry date: 11 January 2044
+Vehicle class: LMV (sample value)
+
+NOTICE: Fictional training data only; not valid identity or address evidence.

@@ -1,35 +1,45 @@
-groups:
-- name: kyc-agent-alerts
-  rules:
-  - alert: KYCRequestFailure
-    expr: sum(rate(kyc_requests_total{outcome="failure"}[5m])) > 0
-    for: 2m
-    labels: {severity: critical}
-    annotations:
-      summary: "KYC processing failures detected"
-      description: "Inspect traces, tool failures and audit events."
-  - alert: KYCExtractionAccuracyCritical
-    expr: kyc_ocr_drift_state >= 2
-    for: 1m
-    labels: {severity: critical}
-    annotations:
-      summary: "OCR extraction accuracy critically degraded"
-      description: "Route affected applications to human review; validate OCR version."
-  - alert: KYCExtractionAccuracyWarning
-    expr: kyc_ocr_drift_state == 1
-    for: 2m
-    labels: {severity: warning}
-    annotations:
-      summary: "OCR extraction quality warning"
-      description: "Review field-level evaluation and vendor versions."
-  - alert: KYCSlowRequests
-    expr: histogram_quantile(0.95, sum(rate(kyc_request_duration_seconds_bucket[5m])) by (le)) > 60
-    for: 5m
-    labels: {severity: warning}
-    annotations:
-      summary: "KYC P95 latency exceeds 60 seconds"
-      description: "Use traces to identify slow model or tool calls."
 
+groups:
+  # Group 1: KYC agent operational alerts
+  - name: kyc-agent-alerts
+    rules:
+      - alert: KYCRequestFailure
+        expr: sum(rate(kyc_requests_total{outcome="failure"}[5m])) > 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KYC processing failures detected"
+          description: "Inspect traces, tool failures and audit events."
+
+      - alert: KYCExtractionAccuracyCritical
+        expr: kyc_ocr_drift_state >= 2
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "OCR extraction accuracy critically degraded"
+          description: "Route affected applications to human review; validate OCR version."
+
+      - alert: KYCExtractionAccuracyWarning
+        expr: kyc_ocr_drift_state == 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "OCR extraction quality warning"
+          description: "Review field-level evaluation and vendor versions."
+
+      - alert: KYCSlowRequests
+        expr: histogram_quantile(0.95, sum(rate(kyc_request_duration_seconds_bucket[5m])) by (le)) > 60
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "KYC P95 latency exceeds 60 seconds"
+          description: "Use traces to identify slow model or tool calls."
+
+  # Group 2: KYC onboarding business SLO alerts
   - name: kyc-onboarding-business-slo
     rules:
       - alert: KYCOnboardingNoDuplicateRerequestSLOBreach
@@ -40,6 +50,7 @@ groups:
         annotations:
           summary: "KYC onboarding no-duplicate-re-request SLO below target"
           description: "Review document inventory and document-request audit events."
+
       - alert: KYCRepeatedDocumentRequestAttempts
         expr: increase(kyc_duplicate_document_request_attempts_prevented_total[15m]) > 3
         for: 1m

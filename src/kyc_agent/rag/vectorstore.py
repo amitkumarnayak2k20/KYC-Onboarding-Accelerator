@@ -90,11 +90,12 @@ def search_knowledge(query: str, n_results: int = 4, persist_dir: str | Path = P
         return []
     if collection.count() == 0:
         return []
-    result = collection.query(query_texts=[query], n_results=min(max(n_results, 1), collection.count()))
+    result = collection.query(query_texts=[query], n_results=min(max(n_results, 1), collection.count()), include=["documents", "metadatas", "distances"])
     output = []
     for idx, text in enumerate((result.get("documents") or [[]])[0]):
         metadata = (result.get("metadatas") or [[]])[0][idx] or {}
+        distance = (result.get("distances") or [[]])[0][idx] if (result.get("distances") or [[]])[0] else None
         output.append({"text": text, "source": metadata.get("source", "unknown"),
                        "unit_id": metadata.get("unit_id", "unknown"),
-                       "chunk_index": metadata.get("chunk_index", 0)})
+                       "chunk_index": metadata.get("chunk_index", 0), "distance": distance})
     return output

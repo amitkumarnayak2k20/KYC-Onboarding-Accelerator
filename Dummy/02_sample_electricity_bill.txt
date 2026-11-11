@@ -1,0 +1,14 @@
+SAMPLE — NOT VALID — TEST DATA ONLY
+SAMPLE ELECTRICITY BILL — ADDRESS PROOF
+Fictional utility-provider statement for KYC workflow testing.
+
+Provider: Deccan Demo Power Services
+Consumer number: DEMO-HYD-004821
+Customer name: Rohan Mehta
+Service address: Flat 402, Lakeview Residency, Road No. 12, Jubilee Hills, Hyderabad, Telangana 500033
+Billing period: 01 October 2026 – 31 October 2026
+Bill date: 02 November 2026
+Due date: 20 November 2026
+Amount due: INR 1,840.00
+
+NOTICE: Fictional training data only; not valid identity or address evidence.

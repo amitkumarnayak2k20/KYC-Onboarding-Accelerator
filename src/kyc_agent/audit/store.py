@@ -82,3 +82,36 @@ def get_slo_counts():
     good=max(0,decisions-bad)
     return {"applications_with_decision":decisions,"decisions_without_duplicate_document_request":good,
             "applications_with_duplicate_document_request":bad,"slo_attainment":good/decisions if decisions else None}
+
+
+def list_applications(status: str | None = None, limit: int = 100):
+    with connect() as c:
+        if status:
+            rows=c.execute("SELECT * FROM applications WHERE application_status=? ORDER BY created_at DESC LIMIT ?",(status,limit)).fetchall()
+        else:
+            rows=c.execute("SELECT * FROM applications ORDER BY created_at DESC LIMIT ?",(limit,)).fetchall()
+        out=[]
+        for row in rows:
+            item=dict(row)
+            if item.get("latest_result"):
+                item["latest_result"]=json.loads(item["latest_result"])
+            out.append(item)
+        return out
+
+def update_application(applicant_id: str, full_name: str | None = None, application_address: str | None = None):
+    with connect() as c:
+        if full_name is not None:
+            c.execute("UPDATE applications SET full_name=? WHERE applicant_id=?",(full_name,applicant_id))
+        if application_address is not None:
+            c.execute("UPDATE applications SET application_address=? WHERE applicant_id=?",(application_address,applicant_id))
+        return c.execute("SELECT changes() AS n").fetchone()["n"] > 0
+
+
+def supersede_documents(applicant_id: str, document_type: str):
+    with connect() as c:
+        rows=c.execute("SELECT document_id FROM applicant_documents WHERE applicant_id=? AND document_type=? AND status!='SUPERSEDED'",(applicant_id,document_type)).fetchall()
+        ids=[r["document_id"] for r in rows]
+        if ids:
+            c.executemany("UPDATE applicant_documents SET status='SUPERSEDED',updated_at=? WHERE document_id=?",
+                          [(time.time(),doc_id) for doc_id in ids])
+        return ids

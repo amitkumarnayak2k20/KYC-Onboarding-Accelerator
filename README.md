@@ -45,16 +45,23 @@ Swagger: `http://localhost:8000/docs`
 
 | Method | Endpoint | Purpose |
 |---|---|---|
+| GET | `/` | Copilot-style frontend |
+| POST | `/chat` | Conversational intent routing and guideline scope guard |
+| GET | `/applications` | List applications / pending queue data |
 | GET | `/health` | Health check |
 | POST | `/applications` | Create applicant application |
 | GET | `/applications/{id}` | Application and latest assessment |
+| PATCH | `/applications/{id}` | Update applicant name/address |
 | POST | `/applications/{id}/documents` | Register submitted document text |
+| POST | `/applications/{id}/documents/upload` | Upload text-readable PDF/DOCX/TXT/MD applicant document |
 | GET | `/applications/{id}/documents` | List document inventory (without document text) |
 | POST | `/applications/{id}/process` | Process all documents in inventory |
 | POST | `/applications/{id}/document-requests` | Request missing/replacement document; duplicate guard applies |
 | GET | `/applications/{id}/document-requests` | Request history |
 | GET | `/applications/{id}/audit` | Audit events |
 | GET | `/slo/summary` | Business SLO summary |
+| POST | `/guidelines/upload` | Upload and re-index policy guidelines in ChromaDB |
+| GET | `/guidelines` | List uploaded guideline sources |
 | GET | `/knowledge/search` | Search policy chunks |
 | POST | `/evaluation/run` | Field-level evaluation |
 | POST | `/demo/ocr-degradation` | Simulate silent DOB extraction regression |
@@ -67,7 +74,7 @@ PowerShell:
 ```powershell
 Copy-Item .env.example .env
 ```
-Edit `.env` and set `OPENAI_API_KEY` to enable automatic policy embedding/indexing. `LLM_PROVIDER=mock` remains the default, so the KYC field extractor uses the deterministic labelled-text parser. Set `LLM_PROVIDER=openai` only if you also want model-based text extraction.
+Edit `.env` and set `OPENAI_API_KEY` to enable ChromaDB embeddings and concise OpenAI-generated answers to retrieved KYC policy questions. Policy-answer generation uses `OPENAI_MODEL` (default `gpt-4o-mini`) independently of the document-extraction provider. `LLM_PROVIDER=mock` can remain the default, so KYC field extraction continues to use the deterministic labelled-text parser. Set `LLM_PROVIDER=openai` only if you also want model-based document-field extraction. Policy answers are restricted to retrieved guideline excerpts; if the excerpts do not support an answer, the assistant must say the uploaded guidelines do not specify it.
 
 Start everything:
 ```powershell
@@ -138,11 +145,11 @@ Invoke-RestMethod "http://localhost:8000/drift/status"
 
 Place synthetic policy/reference files in `documents/` (`pdf`, `docx`, `html`, `csv`, `json`, `txt`, `md`). Pipeline: loaders → PII pattern redaction → logical text units → paragraph/sentence-aware overlap chunking → OpenAI embeddings → ChromaDB `kyc_policy_knowledge` → top-K retrieval.
 
-Defaults: 1,000-character chunks and 150-character overlap. Search at `/knowledge/search?q=passport%20requirements&top_k=4`. The Docker named volume `chroma-data` is mounted at `/app/chroma_store`; it is not a normal host folder.
+Defaults: 1,000-character chunks and 150-character overlap. Set `RAG_SCOPE_DISTANCE_THRESHOLD` (default `0.75`) to tune the retrieval scope gate using labelled in-scope and out-of-scope test queries. Search at `/knowledge/search?q=passport%20requirements&top_k=4`. The Docker named volume `chroma-data` is mounted at `/app/chroma_store`; it is not a normal host folder.
 
 ## Important boundaries / known limitations
 
-- The API demo accepts synthetic text, not scanned customer image/PDF uploads. PDF loading is for policy/reference ingestion. The OpenAI adapter is text extraction, not OCR.
+- Applicant uploads support text-readable PDF, DOCX, TXT and Markdown. Scanned images and image-only PDFs require a separately approved OCR integration. The OpenAI adapter is text extraction, not OCR.
 - No document authenticity, sanctions, PEP, fraud or official identity-database verification is implemented.
 - Address comparison is normalized exact-string matching, not proof of identity or residency.
 - Risk bands are transparent demo rules, not a validated bank risk model.
@@ -158,3 +165,38 @@ pip install -r requirements.txt
 $env:PYTHONPATH="src"
 pytest -q
 ```
+
+
+
+## Architecture diagram
+
+![Onboarding Accelerator architecture](architecture/onboarding-architecture.svg)
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the Mermaid source, runtime scenarios and trust boundaries.
+
+## Copilot-style frontend and conversational scenarios
+
+The web UI is served by the FastAPI application at **http://localhost:8000/**. The app supports text-based applicant document uploads and guideline uploads; the guideline source folder and ChromaDB index persist in Docker named volumes. It provides a chat-style interface, new-application form, pending-KYC queue, guideline upload/indexing page, and existing-application modification form.
+
+### Scenario A — find applications pending KYC
+Type in Copilot chat: `Show me application IDs pending for KYC verification`. The agent reads the SQLite application database and returns IDs with no completed assessment or a review/needs-information status. Select an application and ask `Verify KYC for application APP-...` to run the preliminary checks.
+
+### Scenario B — modify an existing application
+Examples: `Change name to Asha Rao for application APP-12345678` or `Update address to 12 Example Road for application APP-12345678`. For document changes, type `Replace passport document for application APP-12345678`; use the Modify Existing Application form to upload the replacement. Changes and uploads are recorded in the audit trail.
+
+### Scenario C — start a fresh account application
+Type: `I want to open a new account`. The Copilot opens the New Application form. Enter name, email and address, select an identity-document type and upload a text-readable synthetic identity document plus optional proof of address. The UI creates an application ID, registers documents and runs preliminary KYC processing. The result is shown in the UI and saved to the application record.
+
+### Upload KYC guidelines
+Open **KYC guidelines**, upload approved policy/reference documentation and select **Upload & index in ChromaDB**. The API stores the file in `documents/`, rebuilds the policy collection and reports the number of indexed chunks. Set `OPENAI_API_KEY` in `.env` for OpenAI embeddings. If re-indexing fails, the uploaded file remains on disk but the knowledge collection may need to be rebuilt after fixing the configuration.
+
+### Out-of-scope behavior
+The Copilot only answers policy questions when relevant passages can be retrieved from the indexed KYC guidelines (using a configurable similarity-distance gate). If no relevant passage is found, it responds that the question is outside the uploaded guideline scope or that the knowledge base is not indexed. It does not invent bank policy. The chat intent router is deterministic for this capstone; it is not a fully autonomous general-purpose LLM planner.
+
+### Frontend/API security and implementation limits
+- The frontend is a lightweight single-page web UI served by FastAPI; no separate Node build is required.
+- Applicant uploads support text-based PDF, DOCX, TXT and Markdown extraction. Scanned images and image-only PDFs need a separately approved OCR integration.
+- The UI/API is unauthenticated in this local training stack. Do not expose it publicly or use real customer data. Add SSO, RBAC, CSRF protections, encryption, malware scanning, retention controls and security review before any production use.
+- Applicant document text is retained in the demo SQLite database so the mock extraction and audit flow can be demonstrated. Use synthetic documents only.
+- The name/address updates are direct training mutations. A real bank workflow should apply maker-checker controls and verify changes against approved evidence.
+- Policy scope threshold is a demonstration setting, not a legally validated classifier. Tune it against an approved in-scope/out-of-scope test set.

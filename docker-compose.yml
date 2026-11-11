@@ -7,7 +7,7 @@ services:
       CHROMA_PERSIST_DIR: /app/chroma_store
       RAG_DOCUMENTS_DIR: /app/documents
     command: ["sh", "scripts/docker_ingest.sh"]
-    volumes: ["chroma-data:/app/chroma_store"]
+    volumes: ["chroma-data:/app/chroma_store", "guideline-data:/app/documents"]
     restart: "no"
   kyc-api:
     build: .
@@ -21,7 +21,7 @@ services:
       OTEL_ENABLED: "true"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
     ports: ["8000:8000"]
-    volumes: ["kyc-data:/app/data", "chroma-data:/app/chroma_store"]
+    volumes: ["kyc-data:/app/data", "chroma-data:/app/chroma_store", "guideline-data:/app/documents"]
     depends_on:
       rag-ingest: {condition: service_completed_successfully}
       otel-collector: {condition: service_started}
@@ -59,3 +59,4 @@ services:
 volumes:
   kyc-data:
   chroma-data:
+  guideline-data:

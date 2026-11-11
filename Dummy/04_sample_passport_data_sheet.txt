@@ -1,0 +1,17 @@
+SAMPLE — NOT VALID — TEST DATA ONLY
+SAMPLE PASSPORT DATA SHEET — NOT A TRAVEL DOCUMENT
+Fictional identity data for field-extraction tests only.
+
+Document type: Passport (mock data sheet)
+Passport number: X0000000
+Surname: MEHTA
+Given name: ROHAN
+Full name: Rohan Mehta
+Date of birth: 1992-04-18
+Place of birth: Pune, Maharashtra
+Nationality: Indian (sample field value)
+Date of issue: 2022-06-15
+Date of expiry: 2032-06-14
+Address: Flat 402, Lakeview Residency, Road No. 12, Jubilee Hills, Hyderabad, Telangana 500033
+
+NOTICE: Fictional training data only; not valid identity or address evidence.

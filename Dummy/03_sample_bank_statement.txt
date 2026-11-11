@@ -1,0 +1,15 @@
+SAMPLE — NOT VALID — TEST DATA ONLY
+SAMPLE BANK STATEMENT — TEST DATA ONLY
+Fictional bank statement containing a residential address.
+
+Bank: Example National Bank (Fictional)
+Branch: Jubilee Hills Demo Branch, Hyderabad
+Account holder: Rohan Mehta
+Account number: XXXXXX001234
+Customer address: Flat 402, Lakeview Residency, Road No. 12, Jubilee Hills, Hyderabad, Telangana 500033
+Statement period: 01 October 2026 – 31 October 2026
+Statement date: 03 November 2026
+Opening balance: INR 42,500.00
+Closing balance: INR 48,260.00
+
+NOTICE: Fictional training data only; not valid identity or address evidence.

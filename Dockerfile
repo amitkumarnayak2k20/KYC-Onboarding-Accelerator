@@ -6,6 +6,7 @@ COPY src ./src
 COPY data ./data
 COPY documents ./documents
 COPY scripts ./scripts
+COPY ui ./ui
 ENV PYTHONPATH=/app/src
 EXPOSE 8000
 CMD ["uvicorn", "kyc_agent.api:app", "--host", "0.0.0.0", "--port", "8000"]

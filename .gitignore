@@ -9,3 +9,10 @@ __pycache__/
 # Persisted local vector index
 chroma_store/
 *.sqlite3
+
+# Locally uploaded policy files (keep the bundled sample guidance tracked)
+documents/*.pdf
+documents/*.docx
+documents/*.html
+documents/*.htm
+documents/*_uploaded.*

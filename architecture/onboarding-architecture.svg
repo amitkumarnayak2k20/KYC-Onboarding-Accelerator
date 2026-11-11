@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7f9ff"/><stop offset="1" stop-color="#eef3fb"/></linearGradient>
+ <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eaf0ff"/><stop offset="1" stop-color="#dce7ff"/></linearGradient>
+ <linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9f8f1"/><stop offset="1" stop-color="#d7f0e4"/></linearGradient>
+ <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#233a63" flood-opacity=".10"/></filter>
+ <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#8192b0"/></marker>
+ <style>
+ .title{font:700 30px Inter,Arial,sans-serif;fill:#172944}.subtitle{font:14px Inter,Arial,sans-serif;fill:#6b7890}.head{font:700 17px Inter,Arial,sans-serif;fill:#1c2e4c}.body{font:13px Inter,Arial,sans-serif;fill:#52627c}.small{font:11px Inter,Arial,sans-serif;fill:#77859b}.box{rx:14;stroke:#d9e2ef;stroke-width:1.4;filter:url(#shadow)}.arrow{stroke:#8192b0;stroke-width:2.2;fill:none;marker-end:url(#arrow)}.dash{stroke-dasharray:7 6}
+ </style>
+</defs>
+<rect width="1600" height="1050" fill="url(#bg)"/>
+<text x="60" y="60" class="title">Onboarding Accelerator — Account-Opening &amp; KYC Agent</text>
+<text x="60" y="88" class="subtitle">Copilot UI · conversational workflow · KYC policy RAG · application data · observability and operational controls</text>
+<!-- UI layer -->
+<rect x="60" y="125" width="1480" height="120" class="box" fill="#fff"/>
+<text x="85" y="157" class="head">1. User experience</text>
+<rect x="85" y="175" width="330" height="48" rx="9" fill="url(#blue)" stroke="#c9d8fb"/><text x="105" y="204" class="head">Copilot-style chat UI</text>
+<rect x="440" y="175" width="310" height="48" rx="9" fill="#f4f6fa" stroke="#dce3ed"/><text x="460" y="204" class="head">New application intake form</text>
+<rect x="775" y="175" width="310" height="48" rx="9" fill="#f4f6fa" stroke="#dce3ed"/><text x="795" y="204" class="head">Pending KYC queue</text>
+<rect x="1110" y="175" width="400" height="48" rx="9" fill="#f4f6fa" stroke="#dce3ed"/><text x="1130" y="204" class="head">Guideline upload + existing application edit</text>
+<!-- API layer -->
+<rect x="60" y="280" width="1480" height="145" class="box" fill="#fff"/>
+<text x="85" y="313" class="head">2. FastAPI application layer</text>
+<rect x="85" y="333" width="320" height="65" rx="9" fill="url(#blue)" stroke="#c9d8fb"/><text x="105" y="359" class="head">Chat intent router</text><text x="105" y="380" class="small">Intent detection · scope guard · actions</text>
+<rect x="435" y="333" width="320" height="65" rx="9" fill="#f4f6fa" stroke="#dce3ed"/><text x="455" y="359" class="head">Application APIs</text><text x="455" y="380" class="small">Create · update · upload · process · audit</text>
+<rect x="785" y="333" width="320" height="65" rx="9" fill="#f4f6fa" stroke="#dce3ed"/><text x="805" y="359" class="head">Guideline ingestion API</text><text x="805" y="380" class="small">Upload policy files · rebuild index</text>
+<rect x="1135" y="333" width="375" height="65" rx="9" fill="url(#green)" stroke="#c8e8d7"/><text x="1155" y="359" class="head">Onboarding orchestrator</text><text x="1155" y="380" class="small">Coordinates tools and consolidated outcome</text>
+<!-- Agent tools -->
+<rect x="60" y="460" width="960" height="190" class="box" fill="#fff"/>
+<text x="85" y="493" class="head">3. Agent capabilities</text>
+<rect x="85" y="515" width="270" height="105" rx="10" fill="url(#blue)" stroke="#c9d8fb"/><text x="105" y="545" class="head">extract_document_fields</text><text x="105" y="570" class="body">Name · DOB · ID number</text><text x="105" y="590" class="body">Expiry · required fields</text>
+<rect x="380" y="515" width="270" height="105" rx="10" fill="url(#blue)" stroke="#c9d8fb"/><text x="400" y="545" class="head">verify_address</text><text x="400" y="570" class="body">Submitted evidence</text><text x="400" y="590" class="body">Application address comparison</text>
+<rect x="675" y="515" width="310" height="105" rx="10" fill="url(#blue)" stroke="#c9d8fb"/><text x="695" y="545" class="head">assign_risk_rating</text><text x="695" y="570" class="body">Preliminary risk band</text><text x="695" y="590" class="body">Reason codes · human review</text>
+<!-- Data layer -->
+<rect x="1060" y="460" width="480" height="190" class="box" fill="#fff"/>
+<text x="1085" y="493" class="head">4. Data and knowledge layer</text>
+<rect x="1085" y="515" width="195" height="105" rx="10" fill="url(#green)" stroke="#c8e8d7"/><text x="1103" y="545" class="head">SQLite</text><text x="1103" y="570" class="body">Applications</text><text x="1103" y="590" class="body">Documents · audit · requests</text>
+<rect x="1300" y="515" width="215" height="105" rx="10" fill="url(#green)" stroke="#c8e8d7"/><text x="1318" y="545" class="head">ChromaDB</text><text x="1318" y="570" class="body">Policy chunks</text><text x="1318" y="590" class="body">Embeddings · metadata</text>
+<!-- ingestion row -->
+<rect x="60" y="685" width="1480" height="115" class="box" fill="#fff"/>
+<text x="85" y="717" class="head">5. KYC policy RAG ingestion (guidelines only)</text>
+<g>
+<rect x="85" y="738" width="210" height="42" rx="8" fill="#f4f6fa" stroke="#dce3ed"/><text x="102" y="764" class="body">PDF / DOCX / CSV / MD</text>
+<path d="M300 759 H340" class="arrow"/>
+<rect x="350" y="738" width="180" height="42" rx="8" fill="#f4f6fa" stroke="#dce3ed"/><text x="370" y="764" class="body">Load + normalize</text>
+<path d="M535 759 H575" class="arrow"/>
+<rect x="585" y="738" width="180" height="42" rx="8" fill="#f4f6fa" stroke="#dce3ed"/><text x="605" y="764" class="body">PII pattern redact</text>
+<path d="M770 759 H810" class="arrow"/>
+<rect x="820" y="738" width="180" height="42" rx="8" fill="#f4f6fa" stroke="#dce3ed"/><text x="840" y="764" class="body">Chunk + overlap</text>
+<path d="M1005 759 H1045" class="arrow"/>
+<rect x="1055" y="738" width="180" height="42" rx="8" fill="#f4f6fa" stroke="#dce3ed"/><text x="1075" y="764" class="body">OpenAI embeddings</text>
+<path d="M1240 759 H1280" class="arrow"/>
+<rect x="1290" y="738" width="220" height="42" rx="8" fill="url(#green)" stroke="#c8e8d7"/><text x="1310" y="764" class="head">ChromaDB collection</text>
+</g>
+<!-- Observability -->
+<rect x="60" y="835" width="1480" height="145" class="box" fill="#fff"/>
+<text x="85" y="868" class="head">6. Cross-cutting observability, safety and operations</text>
+<rect x="85" y="890" width="250" height="65" rx="9" fill="#f4f6fa" stroke="#dce3ed"/><text x="105" y="917" class="head">OpenTelemetry</text><text x="105" y="938" class="small">Traces / spans → Jaeger</text>
+<rect x="365" y="890" width="250" height="65" rx="9" fill="#f4f6fa" stroke="#dce3ed"/><text x="385" y="917" class="head">Prometheus + Grafana</text><text x="385" y="938" class="small">Metrics / cost / latency / SLO</text>
+<rect x="645" y="890" width="250" height="65" rx="9" fill="#f4f6fa" stroke="#dce3ed"/><text x="665" y="917" class="head">Evaluation + drift</text><text x="665" y="938" class="small">Golden set / OCR regression</text>
+<rect x="925" y="890" width="250" height="65" rx="9" fill="#f4f6fa" stroke="#dce3ed"/><text x="945" y="917" class="head">Alerts + runbooks</text><text x="945" y="938" class="small">Alertmanager / incident response</text>
+<rect x="1205" y="890" width="305" height="65" rx="9" fill="#fff5e8" stroke="#f0dfc5"/><text x="1225" y="917" class="head">Security + human review</text><text x="1225" y="938" class="small">PII controls / audit / no auto-approval</text>
+<!-- vertical connectors -->
+<path d="M800 245 V275" class="arrow"/><path d="M800 425 V455" class="arrow"/><path d="M1020 555 H1050" class="arrow"/><path d="M800 650 V680" class="arrow"/><path d="M800 800 V830" class="arrow"/>
+<text x="60" y="1018" class="small">Training reference architecture · synthetic data only · final account-opening decisions remain with authorised human reviewers</text>
+</svg>
